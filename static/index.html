@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KrishiMitra</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#EEF3E8;--card:#fff;--ink:#16241a;--mute:#526456;--g:#1F6B3A;--gold:#E3A92B;--warn:#C8472B;--line:#D6E0CF;--onG:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1A12;--card:#16261b;--ink:#E8F0E4;--mute:#9DB3A2;--g:#5CC17B;--gold:#F0BE4D;--warn:#FF8A6B;--line:#27402e;--onG:#0E1A12;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1A12;--card:#16261b;--ink:#E8F0E4;--mute:#9DB3A2;--g:#5CC17B;--gold:#F0BE4D;--warn:#FF8A6B;--line:#27402e;--onG:#0E1A12;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.5 Mukta,"Noto Sans Devanagari",system-ui,sans-serif}
+.app{max-width:520px;margin:0 auto;padding:16px 16px 96px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+h1{font-size:26px;font-weight:800;margin:0;color:var(--g)}
+h2{font-size:19px;font-weight:800;margin:22px 0 8px}
+.lang{display:flex;border:2px solid var(--g);border-radius:99px;overflow:hidden}
+.lang button{border:0;background:none;color:var(--g);font:600 15px Mukta,sans-serif;padding:4px 14px;cursor:pointer}
+.lang button.on{background:var(--g);color:var(--onG)}
+.field{background:var(--g);color:var(--onG);border-radius:22px;padding:22px 20px;font-size:23px;line-height:1.9;font-weight:600}
+.field select{font:800 23px Mukta,sans-serif;color:var(--onG);background:rgba(255,255,255,.14);border:0;border-bottom:3px solid var(--gold);border-radius:8px 8px 0 0;padding:0 6px;max-width:100%}
+.field select option{color:#16241a;background:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.alert{border-left:6px solid var(--gold)}.alert.bad{border-left-color:var(--warn)}.alert.ok{border-left-color:var(--g)}
+.alert b{display:block}
+.mute{color:var(--mute);font-size:15px}
+.fc{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center}
+.fc div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 2px}
+.fc i{display:block;height:30px;margin:4px auto;width:14px;background:var(--line);border-radius:4px;position:relative;overflow:hidden}
+.fc i u{position:absolute;bottom:0;left:0;right:0;background:var(--g);border-radius:4px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav a{flex:1;max-width:130px;text-align:center;padding:10px 0 8px;color:var(--mute);text-decoration:none;font-weight:600;font-size:15px}
+nav a b{display:block;font-size:22px;line-height:1.1}
+nav a.on{color:var(--g)}
+nav a:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+textarea{width:100%;min-height:96px;border:2px solid var(--line);border-radius:12px;padding:10px;font:inherit;background:var(--card);color:var(--ink)}
+.btn{display:block;width:100%;margin-top:10px;border:0;border-radius:12px;background:var(--g);color:var(--onG);font:800 18px Mukta,sans-serif;padding:12px;cursor:pointer}
+.btn:disabled{opacity:.5}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chips button{border:1.5px solid var(--g);background:none;color:var(--g);border-radius:99px;padding:3px 12px;font:600 15px Mukta,sans-serif;cursor:pointer}
+.out{white-space:pre-wrap;margin-top:12px}
+#pv{max-width:100%;max-height:240px;border-radius:12px;margin-top:10px;display:none}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:8px}
+summary{font-weight:800;cursor:pointer}
+.tab{display:none}.tab.on{display:block}
+.note{font-size:14px;color:var(--mute);margin-top:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><h1>🌾 KrishiMitra</h1><div class="lang" role="group" aria-label="Language"><button id="l-hi">हिं</button><button id="l-en">EN</button></div></header>
+
+<section class="tab on" id="t-home">
+  <div class="field" id="field"></div>
+  <h2 id="h-alerts"></h2><div id="alerts"></div>
+  <h2 id="h-irr"></h2><div id="irr"></div>
+  <h2 id="h-fc"></h2><div class="fc" id="fc"></div>
+  <p class="note" id="n-demo"></p>
+</section>
+
+<section class="tab" id="t-ask">
+  <h2 id="h-ask"></h2>
+  <div class="chips" id="qchips"></div>
+  <textarea id="q" aria-labelledby="h-ask"></textarea>
+  <button class="btn" id="askBtn"></button>
+  <div class="card out" id="ansBox" hidden></div>
+</section>
+
+<section class="tab" id="t-photo">
+  <h2 id="h-photo"></h2>
+  <p class="mute" id="p-photo"></p>
+  <input type="file" accept="image/*" id="file" class="btn" style="background:var(--card);color:var(--ink);border:2px dashed var(--g)">
+  <img id="pv" alt="">
+  <button class="btn" id="scanBtn" disabled></button>
+  <div class="card out" id="scanOut" hidden></div>
+</section>
+
+<section class="tab" id="t-guides">
+  <h2 id="h-guides"></h2>
+  <p class="mute" id="p-guides"></p>
+  <div id="glist"></div>
+</section>
+</div>
+
+<nav id="nav"></nav>
+
+<script>
+const D = {
+ crops:{wheat:["गेहूं","Wheat"],rice:["धान","Rice"],mustard:["सरसों","Mustard"],cotton:["कपास","Cotton"],tomato:["टमाटर","Tomato"]},
+ places:{Delhi:["दिल्ली","Delhi"],Hisar:["हिसार","Hisar"],Ludhiana:["लुधियाना","Ludhiana"],Jaipur:["जयपुर","Jaipur"],Lucknow:["लखनऊ","Lucknow"]},
+ stages:{sowing:["बुवाई","Sowing"],growing:["बढ़वार","Growing"],flowering:["फूल आना","Flowering"],harvest:["कटाई","Harvest"]},
+ // [max C, min C, rain mm] for 5 days: sample data for the demo
+ fc:{Delhi:[[33,19,0],[30,20,22],[29,18,6],[31,17,0],[32,17,0]],Hisar:[[34,18,0],[34,19,0],[33,18,0],[34,17,0],[35,18,0]],Ludhiana:[[32,17,0],[31,17,2],[28,16,9],[30,16,0],[31,15,0]],Jaipur:[[36,21,0],[37,22,0],[36,21,0],[35,20,0],[34,19,0]],Lucknow:[[33,20,0],[32,20,4],[31,19,12],[30,18,3],[31,17,0]]},
+ guides:[
+  {k:"sow seed bua बुवाई बीज wheat गेहूं",t:["गेहूं की बुवाई","Wheat sowing"],b:["उत्तर भारत में समय पर बुवाई आमतौर पर 1 से 25 नवंबर के बीच होती है। प्रमाणित बीज को लगभग 20 सेमी की कतारों में, 4–5 सेमी गहराई पर बोएं।","Timely sowing in north India is usually 1–25 November. Sow certified seed in rows about 20 cm apart, 4–5 cm deep."]},
+  {k:"water irrigat सिंचाई पानी",t:["सिंचाई कब करें","When to irrigate"],b:["गेहूं में सबसे जरूरी सिंचाइयां जड़ बनने की अवस्था (बुवाई के लगभग 21 दिन बाद), फूल आने और दाना भरने के समय होती हैं। दो दिन में बारिश की संभावना हो तो सिंचाई टालें।","For wheat, the key irrigations are at crown root initiation (about 21 days after sowing), flowering and grain filling. Skip irrigation if rain is forecast within two days."]},
+  {k:"rust yellow disease spot leaf रतुआ पीला रोग पत्ते धब्बे",t:["पीला रतुआ और पत्तों के धब्बे","Yellow rust and leaf spots"],b:["गेहूं की पत्तियों पर पीली धारियों में पाउडर पीला रतुआ हो सकता है, जो ठंडे और नम मौसम में फैलता है। जल्दी अपने कृषि विज्ञान केंद्र या कृषि अधिकारी को बताएं और उन्हीं की सुझाई दवा छिड़कें।","Yellow powdery stripes on wheat leaves may be yellow rust, which spreads in cool, humid weather. Tell your KVK or agriculture officer early and spray only what they recommend."]},
+  {k:"spray pesticide fungicide safe छिड़काव दवा कीटनाशक",t:["सुरक्षित छिड़काव","Safe spraying"],b:["शांत और सूखे मौसम में सुबह या शाम को छिड़काव करें। दस्ताने, मास्क और पूरे कपड़े पहनें, और बारिश से पहले कभी छिड़काव न करें।","Spray in calm, dry weather, early morning or evening. Wear gloves, a mask and full clothing, and never spray just before rain."]},
+  {k:"rain flood drain बारिश जल निकासी",t:["भारी बारिश से पहले","Before heavy rain"],b:["जल निकासी की नालियां साफ करें, खाद और छिड़काव टालें, और कटी फसल को ढककर रखें।","Clear drainage channels, delay fertiliser and spraying, and keep harvested produce covered."]}
+ ],
+ ui:{
+  hi:{tabs:["घर","पूछें","फोटो","गाइड"],alerts:"मौसम चेतावनी",live:"लाइव मौसम डेटा (Open-Meteo)।",irr:"सिंचाई सलाह",fc:"अगले 5 दिन",demo:"डेमो के लिए नमूना मौसम डेटा। असली ऐप में मौसम API जुड़ेगी।",ask:"अपना सवाल पूछें",ph:"जैसे: गेहूं में पीले पत्ते क्यों हो रहे हैं?",go:"जवाब पाएं",busy:"सोच रहा हूं…",photo:"फसल की फोटो जांचें",pp:"पत्ते की साफ फोटो चुनें। यह सिर्फ शुरुआती जांच है, पक्का निदान नहीं।",scan:"फोटो जांचें",guides:"ऑफलाइन गाइड",pg:"ये गाइड इंटरनेट के बिना भी खुलती हैं।",none:"अगले 5 दिन कोई बड़ी चेतावनी नहीं।",rain:"भारी बारिश",heat:"तेज गर्मी",frost:"पाला",noai:"AI जवाब अभी उपलब्ध नहीं। ऑफलाइन गाइड से सबसे करीबी सलाह:",err:"जवाब नहीं मिल सका। थोड़ी देर बाद फिर कोशिश करें।",noimg:"इस व्यूअर में फोटो जांच उपलब्ध नहीं है। ऑफलाइन गाइड देखें।",chips:["पत्ते पीले क्यों हैं?","आज सिंचाई करूं?","बारिश से पहले क्या करें?"]},
+  en:{tabs:["Home","Ask","Photo","Guides"],alerts:"Weather alerts",live:"Live weather data from Open-Meteo.",irr:"Irrigation advice",fc:"Next 5 days",demo:"Sample weather data for the demo. A live weather API plugs in here.",ask:"Ask your question",ph:"For example: why are my wheat leaves turning yellow?",go:"Get answer",busy:"Thinking…",photo:"Check a crop photo",pp:"Choose a clear photo of the leaf. This is a first screening, not a confirmed diagnosis.",scan:"Check photo",guides:"Offline guides",pg:"These guides open without internet.",none:"No major alerts in the next 5 days.",rain:"Heavy rain",heat:"Strong heat",frost:"Frost",noai:"AI answers are unavailable right now. Closest offline guide:",err:"Could not get an answer. Please try again shortly.",noimg:"Photo check is not available in this viewer. See the offline guides.",chips:["Why are leaves yellow?","Should I irrigate today?","What to do before rain?"]}
+ }
+};
+const st = {lang:"hi",crop:"wheat",place:"Hisar",stage:"growing",tab:"home"};
+const $ = id => document.getElementById(id), L = () => st.lang==="hi"?0:1, U = () => D.ui[st.lang];
+const day = n => { const d=new Date(); d.setDate(d.getDate()+n); return new Intl.DateTimeFormat(st.lang==="hi"?"hi-IN":"en-IN",{weekday:"short"}).format(d); };
+const opts = (m,cur) => Object.entries(m).map(([k,v])=>`<option value="${k}"${k===cur?" selected":""}>${v[L()]}</option>`).join("");
+
+function renderField(){
+  const sel=(id,m,cur,lab)=>`<select id="${id}" aria-label="${lab}">${opts(m,cur)}</select>`;
+  const c=sel("s-crop",D.crops,st.crop,"Crop"),p=sel("s-place",D.places,st.place,"Location"),g=sel("s-stage",D.stages,st.stage,"Stage");
+  $("field").innerHTML = st.lang==="hi" ? `${p} में मेरी ${c} की फसल, अवस्था: ${g}।` : `My ${c} crop in ${p} is at the ${g} stage.`;
+  [["s-crop","crop"],["s-place","place"],["s-stage","stage"]].forEach(([id,k])=>$(id).onchange=e=>{st[k]=e.target.value;if(k==="place"){st.live=false;loadWeather();}renderHome();});
+}
+function alertsFor(){
+  const out=[]; D.fc[st.place].forEach(([mx,mn,r],i)=>{
+    if(r>=15) out.push(["bad",U().rain,st.lang==="hi"?`${day(i)}: ${r} मिमी बारिश। सिंचाई, खाद और छिड़काव टालें; नालियां साफ रखें।`:`${day(i)}: about ${r} mm of rain. Hold irrigation, fertiliser and spraying; keep drains clear.`]);
+    if(mx>=35) out.push(["",U().heat,st.lang==="hi"?`${day(i)}: ${mx}°C तक तापमान। सुबह या शाम सिंचाई करें।`:`${day(i)}: up to ${mx}°C. Irrigate early morning or evening.`]);
+    if(mn<=4) out.push(["bad",U().frost,st.lang==="hi"?`${day(i)}: ${mn}°C तक गिरावट। हल्की सिंचाई से पाले का असर घटता है।`:`${day(i)}: down to ${mn}°C. Light irrigation reduces frost damage.`]);
+  }); return out;
+}
+function irrigation(){
+  const f=D.fc[st.place], rain2=f[0][2]+f[1][2], dry=f.every(d=>d[2]<5), hi=st.lang==="hi";
+  if(st.stage==="harvest") return hi?"कटाई के करीब सिंचाई बंद रखें। मिट्टी को सूखने दें।":"Stop irrigating near harvest and let the field dry.";
+  if(rain2>=10) return hi?"अगले दो दिन बारिश की संभावना है। अभी सिंचाई न करें।":"Rain is likely within two days. Skip irrigation now.";
+  if(st.stage==="flowering") return hi?"फूल आने का समय सबसे नाजुक है। आज या कल सिंचाई करें।":"Flowering is the most sensitive stage. Irrigate today or tomorrow.";
+  if(dry) return hi?"5 दिन सूखा रहेगा। 2–3 दिन में हल्की सिंचाई करें।":"The next 5 days look dry. Give a light irrigation within 2–3 days.";
+  return hi?"मिट्टी की ऊपरी 5 सेमी परत सूखी हो तभी सिंचाई करें।":"Irrigate only if the top 5 cm of soil is dry.";
+}
+function renderHome(){
+  renderField();
+  $("n-demo").textContent=st.live?U().live:U().demo;
+  const al=alertsFor();
+  $("alerts").innerHTML = al.length ? al.map(([c,t,m])=>`<div class="card alert ${c}"><b>${t}</b>${m}</div>`).join("") : `<div class="card alert ok">${U().none}</div>`;
+  $("irr").innerHTML = `<div class="card alert ok">${irrigation()}</div>`;
+  $("fc").innerHTML = D.fc[st.place].map(([mx,mn,r],i)=>`<div><span class="mute">${day(i)}</span><i><u style="height:${Math.min(100,r*4)}%"></u></i><b>${mx}°</b><br><span class="mute">${r} mm</span></div>`).join("");
+}
+function renderGuides(){
+  $("glist").innerHTML = D.guides.map(g=>`<details><summary>${g.t[L()]}</summary><p>${g.b[L()]}</p></details>`).join("");
+}
+function renderChrome(){
+  const u=U(), icons=["🏡","💬","📷","📖"], ids=["home","ask","photo","guides"];
+  $("nav").innerHTML = ids.map((id,i)=>`<a href="#${id}" class="${st.tab===id?"on":""}"><b>${icons[i]}</b>${u.tabs[i]}</a>`).join("");
+  $("h-alerts").textContent=u.alerts;$("h-irr").textContent=u.irr;$("h-fc").textContent=u.fc;$("n-demo").textContent=u.demo;
+  $("h-ask").textContent=u.ask;$("q").placeholder=u.ph;$("askBtn").textContent=u.go;
+  $("h-photo").textContent=u.photo;$("p-photo").textContent=u.pp;$("scanBtn").textContent=u.scan;
+  $("h-guides").textContent=u.guides;$("p-guides").textContent=u.pg;
+  $("qchips").innerHTML=u.chips.map(c=>`<button type="button">${c}</button>`).join("");
+  $("qchips").querySelectorAll("button").forEach(b=>b.onclick=()=>{$("q").value=b.textContent;});
+  document.documentElement.lang=st.lang;
+  $("l-hi").className=st.lang==="hi"?"on":"";$("l-en").className=st.lang==="en"?"on":"";
+  renderHome();renderGuides();
+}
+function showTab(){
+  const t=(location.hash||"#home").slice(1); st.tab=["home","ask","photo","guides"].includes(t)?t:"home";
+  document.querySelectorAll(".tab").forEach(s=>s.classList.toggle("on",s.id==="t-"+st.tab));
+  document.querySelectorAll("nav a").forEach((a,i)=>a.classList.toggle("on",a.getAttribute("href")==="#"+st.tab));
+}
+addEventListener("hashchange",showTab);
+$("l-hi").onclick=()=>{st.lang="hi";renderChrome();};$("l-en").onclick=()=>{st.lang="en";renderChrome();};
+
+// ---- live weather (Open-Meteo, no key needed) ----
+const GEO={Delhi:[28.61,77.21],Hisar:[29.15,75.72],Ludhiana:[30.90,75.86],Jaipur:[26.91,75.79],Lucknow:[26.85,80.95]};
+async function loadWeather(){
+  const p=st.place,[la,lo]=GEO[p];
+  try{
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=Asia%2FKolkata&forecast_days=5`);
+    if(!r.ok) throw 0; const d=(await r.json()).daily;
+    D.fc[p]=d.time.map((_,i)=>[Math.round(d.temperature_2m_max[i]),Math.round(d.temperature_2m_min[i]),Math.round(d.precipitation_sum[i])]);
+    if(p===st.place){st.live=true;renderHome();}
+  }catch(e){ if(p===st.place){st.live=false;renderHome();} }
+}
+// ---- AI through our own backend (/api/ask, /api/scan) ----
+function offlineAnswer(q){
+  const w=q.toLowerCase().split(/\s+/).filter(x=>x.length>2);
+  let best=null,sc=0; D.guides.forEach(g=>{const s=w.filter(x=>g.k.toLowerCase().includes(x)).length;if(s>sc){sc=s;best=g;}});
+  best=best||D.guides[1]; return `${U().noai}\n\n${best.t[L()]}\n${best.b[L()]}`;
+}
+async function post(url,body,isForm){
+  const r=await fetch(url,{method:"POST",headers:isForm?{}:{"Content-Type":"application/json"},body:isForm?body:JSON.stringify(body)});
+  if(!r.ok) throw new Error(r.status); return (await r.json()).text;
+}
+const payload=()=>({crop:D.crops[st.crop][1],place:D.places[st.place][1],stage:D.stages[st.stage][1],lang:st.lang,forecast:D.fc[st.place]});
+async function runAI(box,btn,fn,fallback){
+  box.hidden=false;box.textContent=U().busy;btn.disabled=true;
+  try{box.textContent=await fn();}catch(e){box.textContent=fallback();}
+  btn.disabled=false;
+}
+$("askBtn").onclick=()=>{const q=$("q").value.trim(); if(q) runAI($("ansBox"),$("askBtn"),()=>post("/api/ask",{...payload(),question:q}),()=>offlineAnswer(q));};
+let img=null;
+$("file").onchange=e=>{img=e.target.files[0]||null;const pv=$("pv");
+  if(img){pv.src=URL.createObjectURL(img);pv.style.display="block";pv.alt=img.name;}
+  $("scanBtn").disabled=!img;};
+$("scanBtn").onclick=()=>{const f=new FormData();f.append("image",img);const p=payload();
+  Object.entries(p).forEach(([k,v])=>f.append(k,typeof v==="string"?v:JSON.stringify(v)));
+  runAI($("scanOut"),$("scanBtn"),()=>post("/api/scan",f,true),()=>U().err);};
+renderChrome();showTab();loadWeather();
+</script>
+</body>
+</html>
